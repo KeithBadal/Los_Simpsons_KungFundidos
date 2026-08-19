@@ -11,6 +11,8 @@
   background: #111;
 }
 
+/* HEADER */
+
 header {
   display: flex;
   justify-content: space-between;
@@ -27,6 +29,8 @@ nav ul {
 nav ul a {
   text-decoration: none;
 }
+
+/* CHARACTERS */
 
 .characters {
   padding: 20px 20px;
@@ -55,9 +59,57 @@ nav ul a {
   padding: 20px 10px;
 }
 
+
+.episodes {
+  padding: 20px 20px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+}
+
+.episode {
+  background: #f5f5f5;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.5s ease;
+}
+
+.episode:hover {
+  transform: scale(1.1);
+}
+
+.episode img {
+  width: 100%;
+  object-fit: cover;
+}
+.episode_info {
+  padding: 20px 10px;
+}
+
+
+.locations {
+  padding: 20px 20px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+}
+
+.location {
+  background: #f5f5f5;
+  border-radius: 10px;
+  text-align: center;
+  padding: 20px 10px;
+  transition: all 0.5s ease;
+}
+
+.location:hover {
+  transform: scale(1.1);
+}
+
+
+
 footer {
   margin: auto;
   text-align: center;
   padding: 10px 20px;
 }
-
