@@ -56,7 +56,42 @@ export function renderAllEpisodes(episodes) {
           <p>Synopsis: ${episode.synopsis || 'No synopsis available'}</p>
         </div>
       </div>
-    `
-    })
-    document.querySelector('.episodes').innerHTML = html
-}  
+    `;
+  });
+
+  const container = document.querySelector('.episodes');
+
+  if (container) {
+    container.innerHTML = html;
+  }
+}
+
+export function renderAllLocations(locations) {
+  let html = '';
+
+  locations.forEach(location => {
+    html += `
+      <div class="location">
+        <h2>${location.name}</h2>
+        <p>Town: ${location.town || 'Unknown'}</p>
+        <p>Use: ${location.use || 'Unknown'}</p>
+      </div>
+    `;
+  });
+
+  const container = document.querySelector('.locations');
+
+  if (container) {
+    container.innerHTML = html;
+  }
+}
+
+export function renderAllElements(elements, section) {
+  if (section === CHARACTER_SECTION) {
+    renderAllCharacters(elements);
+  } else if (section === EPISODE_SECTION) {
+    renderAllEpisodes(elements);
+  } else if (section === LOCATION_SECTION) {
+    renderAllLocations(elements);
+  }
+}

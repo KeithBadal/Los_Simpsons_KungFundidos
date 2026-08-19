@@ -8,7 +8,8 @@ async function fetchData(url) {
 
     return await response.json();
   } catch (error) {
-    console.error(error.message); 
+    console.error(error.message);
+    return null;
   }
 }
 
