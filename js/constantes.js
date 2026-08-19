@@ -10,4 +10,4 @@ export {
     URL_API_CHARACTERS,
     URL_API_EPISODES,
     URL_API_LOCATIONS
-};
+}; 
