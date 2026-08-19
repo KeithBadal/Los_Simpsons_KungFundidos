@@ -1,11 +1,24 @@
-import fetchData from './api.js'
-import renderAllCharacters, { renderAllEpisodes } from './render.js'
-const { URL_API_CHARACTERS, URL_API_EPISODES, URL_API_LOCATIONS } = await import('./constantes.js');
+import fetchData from './api.js';
 
-const characters = await fetchData(URL_API_CHARACTERS);
-renderAllCharacters(characters.results);
+import {
+  URL_API_CHARACTERS,
+  URL_API_EPISODES,
+  URL_API_LOCATIONS,
+  CHARACTER_SECTION,
+  EPISODE_SECTION,
+  LOCATION_SECTION
+} from './constantes.js';
 
+import {
+  renderAllCharacters,
+  renderAllEpisodes,
+  renderAllLocations
+} from './render.js';
 
+document.addEventListener('DOMContentLoaded', async () => {
+  pages();
 
+  await loadSection(CHARACTER_SECTION);
+});
 
  
