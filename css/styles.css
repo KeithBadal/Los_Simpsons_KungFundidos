@@ -6,6 +6,9 @@
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
 }
+body {
+  overflow-x: hidden;
+}
 
 #app {
   background: #111;
@@ -17,13 +20,21 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  gap: 15px;
+  padding: 15px 20px;
+  flex-wrap: wrap;
+}
+
+.logo h1 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
 }
 
 nav ul {
   display: flex;
   list-style: none;
   gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 nav ul a {
@@ -35,7 +46,7 @@ nav ul a {
 .characters {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
 }
 
@@ -63,7 +74,7 @@ nav ul a {
 .episodes {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
 }
 
@@ -90,7 +101,7 @@ nav ul a {
 .locations {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
 }
 
@@ -110,4 +121,26 @@ footer {
   margin: auto;
   text-align: center;
   padding: 10px 20px;
+}
+
+@media (max-width: 480px) {
+  .characters,
+  .episodes,
+  .locations {
+    grid-template-columns: 1fr;
+  }
+
+  .logo h1 {
+    font-size: 2rem;
+  }
+
+  nav ul {
+    gap: 10px;
+  }
+
+  .character:hover,
+  .episode:hover,
+  .location:hover {
+    transform: none;
+  }
 }
