@@ -1,4 +1,5 @@
 import {
+  HOME_SECTION,
   CHARACTER_SECTION,
   EPISODE_SECTION,
   LOCATION_SECTION
@@ -86,6 +87,40 @@ export function renderAllLocations(locations) {
   }
 }
 
+
+export function renderHomeSection(randonCharacter) {
+  const container = document.querySelector('.home');
+  let html = '';
+
+  if (randonCharacter) {
+    html = `
+      <div class="home_character">
+        <div class="home_character_img">
+          <img
+            src="https://cdn.thesimpsonsapi.com/500${randonCharacter.portrait_path}"
+            alt="${randonCharacter.name}">
+        </div>
+
+        <div class="home_character_info">
+          <h2>${randonCharacter.name}</h2>
+          <p>Occupation: ${randonCharacter.occupation || 'Unknown'}</p>
+          <p>Gender: ${randonCharacter.gender || 'Unknown'}</p>
+          <p>Status: ${randonCharacter.status || 'Unknown'}</p>
+          <p>Birthdate: ${randonCharacter.birthdate || 'Unknown'}</p>
+        </div>
+      </div>
+    `;
+  } else {
+    html = '<p>No character data available.</p>';
+  }
+
+  html += `<button id="random-character-btn" class="btn-random">Buscar otro personaje</button>`;
+  if (container) {
+    container.innerHTML = html;
+  }
+}
+
+
 export function renderAllElements(elements, section) {
   if (section === CHARACTER_SECTION) {
     renderAllCharacters(elements);
@@ -93,5 +128,8 @@ export function renderAllElements(elements, section) {
     renderAllEpisodes(elements);
   } else if (section === LOCATION_SECTION) {
     renderAllLocations(elements);
+  }
+  if (section === HOME_SECTION) {
+    renderHomeSection(elements);
   }
 }
