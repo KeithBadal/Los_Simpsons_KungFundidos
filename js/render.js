@@ -1,4 +1,5 @@
 import {
+  HOME_SECTION,
   URL_API_BASE_IM,
   CHARACTER_SECTION,
   EPISODE_SECTION,
@@ -41,7 +42,7 @@ export function renderAllEpisodes(episodes) {
     html += `
       <div class="episode">
         <div class="episode_img">
-          <img 
+          <img
             src="${imageUrl}"
             alt="${episode.name}"
           >
@@ -76,6 +77,40 @@ export function renderAllLocations(locations, currentPage) {
   document.querySelector('.locations').innerHTML = html
 }
 
+
+export function renderHomeSection(randonCharacter) {
+  const container = document.querySelector('.home');
+  let html = '';
+
+  if (randonCharacter) {
+    html = `
+      <div class="home_character">
+        <div class="home_character_img">
+          <img
+            src="${URL_API_BASE_IM}${randonCharacter.portrait_path}"
+            alt="${randonCharacter.name}">
+        </div>
+
+        <div class="home_character_info">
+          <h2>${randonCharacter.name}</h2>
+          <p>Occupation: ${randonCharacter.occupation || 'Unknown'}</p>
+          <p>Gender: ${randonCharacter.gender || 'Unknown'}</p>
+          <p>Status: ${randonCharacter.status || 'Unknown'}</p>
+          <p>Birthdate: ${randonCharacter.birthdate || 'Unknown'}</p>
+        </div>
+      </div>
+    `;
+  } else {
+    html = '<p>No character data available.</p>';
+  }
+
+  html += `<button id="random-character-btn" class="btn-random">Buscar otro personaje</button>`;
+  if (container) {
+    container.innerHTML = html;
+  }
+}
+
+
 export function renderAllElements(elements, section) {
   if (section === CHARACTER_SECTION) {
     renderAllCharacters(elements);
@@ -83,14 +118,16 @@ export function renderAllElements(elements, section) {
     renderAllEpisodes(elements);
   } else if (section === LOCATION_SECTION) {
     renderAllLocations(elements);
+  } else if (section === HOME_SECTION) {
+    renderHomeSection(elements);
   }
 }
 
 export function renderPagination(totalPages, currentPage = 1, onPageClick = () => {}) {
   const container = document.getElementById('pagination');
 
-  if (!container) return; 
-  
+  if (!container) return;
+
   container.innerHTML = '';
 
   const createBtn = (texto, id, paginaDestino, deshabilitado) => {
