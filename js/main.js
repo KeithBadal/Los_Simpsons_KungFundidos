@@ -16,8 +16,11 @@ import {
   renderHomeSection,
   renderAllCharacters,
   renderAllEpisodes,
-  renderAllLocations
+  renderAllLocations,
+  renderPagination
 } from './render.js';
+
+let currentSection = HOME_SECTION;
 
 document.addEventListener('DOMContentLoaded', async () => {
   setupPages();
@@ -50,65 +53,70 @@ function setupPages() {
     e.preventDefault();
     if (e.currentTarget.classList.contains('active')) return;
     setActiveButton(CHARACTER_SECTION);
-    await loadSection(CHARACTER_SECTION);
+    await loadSection(CHARACTER_SECTION, 1);
   });
 
   btnEpisode?.addEventListener('click', async (e) => {
     e.preventDefault();
     if (e.currentTarget.classList.contains('active')) return;
     setActiveButton(EPISODE_SECTION);
-    await loadSection(EPISODE_SECTION);
+    await loadSection(EPISODE_SECTION, 1);
   });
 
   btnLocation?.addEventListener('click', async (e) => {
     e.preventDefault();
     if (e.currentTarget.classList.contains('active')) return;
     setActiveButton(LOCATION_SECTION);
-    await loadSection(LOCATION_SECTION);
+    await loadSection(LOCATION_SECTION, 1);
   });
 }
 
-async function loadSection(section) {
-  let url;
-  let render;
-
-  switch (section) {
-
-    case HOME_SECTION:
-      //entre 1 y 1182
-      let randon = Math.floor(Math.random() * 1182);
-      if (randon === 0) {
-        randon+=1;
-      }
-      url = URL_API_CHARACTERS + `/${randon}`;
-      render = renderHomeSection;
-      break;
-    case CHARACTER_SECTION:
-      url = URL_API_CHARACTERS;
-      render = renderAllCharacters;
-      break;
-    case EPISODE_SECTION:
-      url = URL_API_EPISODES;
-      render = renderAllEpisodes;
-      break;
-    case LOCATION_SECTION:
-      url = URL_API_LOCATIONS;
-      render = renderAllLocations;
-      break;
-    default:
-      console.error(`Sección desconocida: ${section}`);
-      return;
-  }
+async function loadSection(section, page = 1) {
+  currentSection = section;
 
   hideSections();
 
   const selectedSection = document.querySelector(`.${section}`);
   if (selectedSection) selectedSection.style.display = section === HOME_SECTION ? 'flex' : 'grid';
 
-  if (section === HOME_SECTION && selectedSection) {
-    selectedSection.innerHTML = '<div class="spinner"></div>';
+  const paginationContainer = document.getElementById('pagination');
+
+  if (section === HOME_SECTION) {
+    if (paginationContainer) paginationContainer.innerHTML = '';
+    if (selectedSection) selectedSection.innerHTML = '<div class="spinner"></div>';
+
+    let randon = Math.floor(Math.random() * 1182);
+    if (randon === 0) {
+      randon += 1;
+    }
+
+    const data = await fetchData(`${URL_API_CHARACTERS}/${randon}`);
+
+    if (!data) {
+      console.error(`No se pudieron cargar los datos de ${section}`);
+      return;
+    }
+
+    renderHomeSection(data);
+    return;
   }
 
+  let baseUrl;
+
+  if (section === CHARACTER_SECTION) {
+    baseUrl = URL_API_CHARACTERS;
+  } else if (section === EPISODE_SECTION) {
+    baseUrl = URL_API_EPISODES;
+  } else if (section === LOCATION_SECTION) {
+    baseUrl = URL_API_LOCATIONS;
+  }
+
+  if (!baseUrl) {
+    console.error(`Sección desconocida: ${section}`);
+    return;
+  }
+
+  const url = `${baseUrl}?page=${page}`;
   const data = await fetchData(url);
 
   if (!data) {
@@ -116,6 +124,19 @@ async function loadSection(section) {
     return;
   }
 
-  render(data.results || data);
-}
+  const elements = data.results || data;
 
+  if (section === CHARACTER_SECTION) {
+    renderAllCharacters(elements);
+  } else if (section === EPISODE_SECTION) {
+    renderAllEpisodes(elements);
+  } else if (section === LOCATION_SECTION) {
+    renderAllLocations(elements);
+  }
+
+  const totalPages = data.pages || 1;
+  renderPagination(totalPages, page, (newPage) => {
+    loadSection(currentSection, newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}

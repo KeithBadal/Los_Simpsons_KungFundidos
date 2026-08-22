@@ -1,6 +1,7 @@
 
 
 const URL_API_BASE = "https://thesimpsonsapi.com/api/";
+const URL_API_BASE_IM = "https://cdn.thesimpsonsapi.com/500";
 
 const URL_API_CHARACTERS = `${URL_API_BASE}characters`;
 const URL_API_EPISODES = `${URL_API_BASE}episodes`;
@@ -19,6 +20,7 @@ const SECTION_TO_KEY = {
 };
 
 export {
+  URL_API_BASE_IM,
   URL_API_CHARACTERS,
   URL_API_EPISODES,
   URL_API_LOCATIONS,
