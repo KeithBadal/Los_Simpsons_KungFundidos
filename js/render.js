@@ -1,4 +1,5 @@
 import {
+  URL_API_BASE_IM,
   CHARACTER_SECTION,
   EPISODE_SECTION,
   LOCATION_SECTION
@@ -8,11 +9,12 @@ export function renderAllCharacters(characters) {
   let html = '';
 
   characters.forEach(character => {
+    const imageUrl = `${URL_API_BASE_IM}${character.portrait_path}`
     html += `
       <div class="character">
         <div class="character_img">
           <img
-          src="https://cdn.thesimpsonsapi.com/500${character.portrait_path}" 
+          src="${imageUrl}"
             alt="${character.name}">
         </div>
 
@@ -27,18 +29,14 @@ export function renderAllCharacters(characters) {
     `;
   });
 
-  const container = document.querySelector('.characters');
-
-  if (container) {
-    container.innerHTML = html;
-  }
+  document.querySelector('.characters').innerHTML = html
 }
 
 export function renderAllEpisodes(episodes) {
   let html = '';
 
   episodes.forEach(episode => {
-    const imageUrl = `https://cdn.thesimpsonsapi.com/500${episode.image_path}`;
+    const imageUrl = `${URL_API_BASE_IM}${episode.image_path}`;
 
     html += `
       <div class="episode">
@@ -59,14 +57,10 @@ export function renderAllEpisodes(episodes) {
     `;
   });
 
-  const container = document.querySelector('.episodes');
-
-  if (container) {
-    container.innerHTML = html;
-  }
+  document.querySelector('.episodes').innerHTML = html
 }
 
-export function renderAllLocations(locations) {
+export function renderAllLocations(locations, currentPage) {
   let html = '';
 
   locations.forEach(location => {
@@ -79,11 +73,7 @@ export function renderAllLocations(locations) {
     `;
   });
 
-  const container = document.querySelector('.locations');
-
-  if (container) {
-    container.innerHTML = html;
-  }
+  document.querySelector('.locations').innerHTML = html
 }
 
 export function renderAllElements(elements, section) {
@@ -94,4 +84,36 @@ export function renderAllElements(elements, section) {
   } else if (section === LOCATION_SECTION) {
     renderAllLocations(elements);
   }
+}
+
+export function renderPagination(totalPages, currentPage = 1, onPageClick = () => {}) {
+  const container = document.getElementById('pagination');
+
+  if (!container) return; 
+  
+  container.innerHTML = '';
+
+  const createBtn = (texto, id, paginaDestino, deshabilitado) => {
+    const btn = document.createElement('button');
+    btn.id = id;
+    btn.className = 'btn-paginacion';
+    btn.textContent = texto;
+    btn.disabled = deshabilitado;
+
+    if (!deshabilitado) {
+      btn.addEventListener('click', () => onPageClick(paginaDestino));
+    }
+    return btn;
+  };
+
+  const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+  const esUltima = currentPage >= totalPages;
+
+  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, false);
+  const btnNext = createBtn(`Next: ${nextPage}`, 'btn-next-page', nextPage, esUltima);
+  const btnLast = createBtn(`Last page: ${totalPages}`, 'btn-last-page', totalPages, esUltima);
+
+  btnCurrent.classList.add('btn-actual');
+
+  container.append(btnCurrent, btnNext, btnLast);
 }
