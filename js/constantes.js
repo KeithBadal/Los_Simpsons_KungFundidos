@@ -1,6 +1,7 @@
 
 
 export const URL_API_BASE = "https://thesimpsonsapi.com/api/";
+export const URL_API_BASE_IM = "https://cdn.thesimpsonsapi.com/500"
 
 export const URL_API_CHARACTERS = `${URL_API_BASE}characters`;
 export const URL_API_EPISODES = `${URL_API_BASE}episodes`;
