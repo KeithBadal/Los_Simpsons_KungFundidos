@@ -1,36 +1,131 @@
 <!DOCTYPE html>
-<html lang="es-MX">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Los Simpsons</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <title>The Simpsons</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
 
 <body>
+
   <header>
     <div class="logo">
-      <h1>Los Simpsons</h1>
+      <h1>The Simpsons</h1>
     </div>
+
     <nav>
       <ul>
-        <li><a id="character" href="#">Characters</a></li>
-        <li><a id="episode" href="#">Episodes</a></li>
-        <li><a id="location" href="#">Locations</a></li>
-    </ul>
+        <li><a id="home" href="#">Home</a></li>
+        <li><a id="characters" href="#">Characters</a></li>
+        <li><a id="episodes" href="#">Episodes</a></li>
+        <li><a id="locations" href="#">Locations</a></li>
+      </ul>
     </nav>
   </header>
-  <div id="app">
-    <div class="characters"></div>
-   </div>
 
+  <main id="app">
+    <div class="bg_decor" aria-hidden="true">
+      <span class="cloud_bg cloud_bg_1"></span>
+      <span class="cloud_bg cloud_bg_2"></span>
+      <span class="donut_bg donut_1"></span>
+      <span class="donut_bg donut_2"></span>
+      <span class="donut_bg donut_3"></span>
+    </div>
 
-   
+    <section class="home">
+      <div class="home_random">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="home_cards">
+        <article class="card card_characters" data-target="characters">
+          <h3>Characters</h3>
+          <p>Meet Homer, Marge, Bart, Lisa and everyone else in Springfield.</p>
+        </article>
+
+        <article class="card card_episodes" data-target="episodes">
+          <h3>Episodes</h3>
+          <p>Revisit the classic episodes season by season.</p>
+        </article>
+
+        <article class="card card_locations" data-target="locations">
+          <h3>Locations</h3>
+          <p>Visit the Simpsons' house, Moe's Tavern and other iconic places.</p>
+        </article>
+      </div>
+
+      <div class="team">
+        <h2 class="team_title">KungFundidos</h2>
+
+        <div class="team_grid">
+          <article class="team_member">
+            <div class="team_member_inner">
+              <div class="team_member_front">
+                <div class="team_avatar">F</div>
+                <h3>Faustino</h3>
+              </div>
+              <div class="team_member_back">
+                <p>Faustino Loeza Pérez</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="team_member">
+            <div class="team_member_inner">
+              <div class="team_member_front">
+                <div class="team_avatar">D</div>
+                <h3>David</h3>
+              </div>
+              <div class="team_member_back">
+                <p>David Manuel Chan Canul</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="team_member">
+            <div class="team_member_inner">
+              <div class="team_member_front">
+                <div class="team_avatar">K</div>
+                <h3>Kenneth</h3>
+              </div>
+              <div class="team_member_back">
+                <p>Kenneth Hazael Torres Casanova</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="team_member">
+            <div class="team_member_inner">
+              <div class="team_member_front">
+                <div class="team_avatar">K</div>
+                <h3>Keith</h3>
+              </div>
+              <div class="team_member_back">
+                <p>Keith Badal Vázquez</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="characters"></section>
+    <section class="episodes"></section>
+    <section class="locations"></section>
+  </main>
+
+  <div id="pagination"></div>
+
   <footer>
-    <p>Creado con ❤️ por los alumnos reprobados de Ingeniería de Requisitos de la UNID</p>
+    <p>
+      Created with ❤️ by the failed students of Requirements Engineering at UNID
+    </p>
   </footer>
-  <script type="module" src="/js/main.js"></script>
+
+  <script type="module" src="./js/main.js"></script>
+
 </body>
 
 </html>

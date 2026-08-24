@@ -1,13 +1,30 @@
-
 const URL_API_BASE = "https://thesimpsonsapi.com/api/";
+const URL_API_BASE_IM = "https://cdn.thesimpsonsapi.com/500";
+
 const URL_API_CHARACTERS = `${URL_API_BASE}characters`;
 const URL_API_EPISODES = `${URL_API_BASE}episodes`;
 const URL_API_LOCATIONS = `${URL_API_BASE}locations`;
 
+const CHARACTER_SECTION = "characters";
+const EPISODE_SECTION = "episodes";
+const LOCATION_SECTION = "locations";
+const HOME_SECTION = "home";
+
+const SECTION_TO_KEY = {
+  [CHARACTER_SECTION]: CHARACTER_SECTION,
+  [EPISODE_SECTION]: EPISODE_SECTION,
+  [LOCATION_SECTION]: LOCATION_SECTION,
+  [HOME_SECTION]: HOME_SECTION,
+};
 
 export {
-    URL_API_BASE,
-    URL_API_CHARACTERS,
-    URL_API_EPISODES,
-    URL_API_LOCATIONS
+  URL_API_BASE_IM,
+  URL_API_CHARACTERS,
+  URL_API_EPISODES,
+  URL_API_LOCATIONS,
+  CHARACTER_SECTION,
+  EPISODE_SECTION,
+  LOCATION_SECTION,
+  HOME_SECTION,
+  SECTION_TO_KEY
 };
