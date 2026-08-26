@@ -1,41 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Luckiest+Guy&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Inter", sans-serif;
+  font-family: "Baloo 2", "Inter", sans-serif;
+}
+body {
+  overflow-x: hidden;
 }
 
 #app {
   background: #111;
 }
 
-/* HEADER */
-
+/* =========================================
+   HEADER
+**/
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  gap: 15px;
+  padding: 12px 24px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #181818;
+  border-bottom: 2px solid #FFD90F;
+}
+
+.logo h1 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-family: "Luckiest Guy", cursive;
+  color: #FFD90F;
+  letter-spacing: 1px;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
 nav ul {
   display: flex;
   list-style: none;
-  gap: 20px;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 nav ul a {
   text-decoration: none;
+  color: #eaeaea;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-/* CHARACTERS */
+nav ul a:hover {
+  color: #FFD90F;
+}
 
+nav ul a.active:hover {
+  color: #000000;
+}
+
+/* =========================================
+   CHARACTERS
+**/
 .characters {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
 }
 
@@ -59,11 +94,13 @@ nav ul a {
   padding: 20px 10px;
 }
 
-
+/* =========================================
+   EPISODES
+**/
 .episodes {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
 }
 
@@ -86,11 +123,13 @@ nav ul a {
   padding: 20px 10px;
 }
 
-
+/* =========================================
+   LOCATIONS
+**/
 .locations {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
 }
 
@@ -106,10 +145,17 @@ nav ul a {
   transform: scale(1.1);
 }
 
-
+/* =========================================
+   FOOTER
+**/
 
 footer {
   margin: auto;
   text-align: center;
   padding: 10px 20px;
 }
+
+
+/* =========================================
+   PAGINATION
+**/

@@ -1,4 +1,6 @@
 import {
+  HOME_SECTION,
+  URL_API_BASE_IM,
   CHARACTER_SECTION,
   EPISODE_SECTION,
   LOCATION_SECTION
@@ -8,11 +10,12 @@ export function renderAllCharacters(characters) {
   let html = '';
 
   characters.forEach(character => {
+    const imageUrl = `${URL_API_BASE_IM}${character.portrait_path}`
     html += `
       <div class="character">
         <div class="character_img">
           <img
-          src="https://cdn.thesimpsonsapi.com/500${character.portrait_path}" 
+          src="${imageUrl}"
             alt="${character.name}">
         </div>
 
@@ -27,23 +30,19 @@ export function renderAllCharacters(characters) {
     `;
   });
 
-  const container = document.querySelector('.characters');
-
-  if (container) {
-    container.innerHTML = html;
-  }
+  document.querySelector('.characters').innerHTML = html
 }
 
 export function renderAllEpisodes(episodes) {
   let html = '';
 
   episodes.forEach(episode => {
-    const imageUrl = `https://cdn.thesimpsonsapi.com/500${episode.image_path}`;
+    const imageUrl = `${URL_API_BASE_IM}${episode.image_path}`;
 
     html += `
       <div class="episode">
         <div class="episode_img">
-          <img 
+          <img
             src="${imageUrl}"
             alt="${episode.name}"
           >
@@ -59,14 +58,10 @@ export function renderAllEpisodes(episodes) {
     `;
   });
 
-  const container = document.querySelector('.episodes');
-
-  if (container) {
-    container.innerHTML = html;
-  }
+  document.querySelector('.episodes').innerHTML = html
 }
 
-export function renderAllLocations(locations) {
+export function renderAllLocations(locations, currentPage) {
   let html = '';
 
   locations.forEach(location => {
@@ -79,12 +74,42 @@ export function renderAllLocations(locations) {
     `;
   });
 
-  const container = document.querySelector('.locations');
+  document.querySelector('.locations').innerHTML = html
+}
 
+
+export function renderHomeSection(randonCharacter) {
+  const container = document.querySelector('.home_random');
+  let html = '';
+
+  if (randonCharacter) {
+    html = `
+      <div class="home_character">
+        <div class="home_character_img">
+          <img
+            src="${URL_API_BASE_IM}${randonCharacter.portrait_path}"
+            alt="${randonCharacter.name}">
+        </div>
+
+        <div class="home_character_info">
+          <h2>${randonCharacter.name}</h2>
+          <p>Occupation: ${randonCharacter.occupation || 'Unknown'}</p>
+          <p>Gender: ${randonCharacter.gender || 'Unknown'}</p>
+          <p>Status: ${randonCharacter.status || 'Unknown'}</p>
+          <p>Birthdate: ${randonCharacter.birthdate || 'Unknown'}</p>
+        </div>
+      </div>
+    `;
+  } else {
+    html = '<p>No character data available.</p>';
+  }
+
+  html += `<button id="random-character-btn" class="btn-random">Search another character</button>`;
   if (container) {
     container.innerHTML = html;
   }
 }
+
 
 export function renderAllElements(elements, section) {
   if (section === CHARACTER_SECTION) {
@@ -93,5 +118,39 @@ export function renderAllElements(elements, section) {
     renderAllEpisodes(elements);
   } else if (section === LOCATION_SECTION) {
     renderAllLocations(elements);
+  } else if (section === HOME_SECTION) {
+    renderHomeSection(elements);
   }
+}
+
+export function renderPagination(totalPages, currentPage = 1, onPageClick = () => {}) {
+  const container = document.getElementById('pagination');
+
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const createBtn = (texto, id, paginaDestino, deshabilitado) => {
+    const btn = document.createElement('button');
+    btn.id = id;
+    btn.className = 'btn-paginacion';
+    btn.textContent = texto;
+    btn.disabled = deshabilitado;
+
+    if (!deshabilitado) {
+      btn.addEventListener('click', () => onPageClick(paginaDestino));
+    }
+    return btn;
+  };
+
+  const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+  const esUltima = currentPage >= totalPages;
+
+  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, false);
+  const btnNext = createBtn(`Next: ${nextPage}`, 'btn-next-page', nextPage, esUltima);
+  const btnLast = createBtn(`Last page: ${totalPages}`, 'btn-last-page', totalPages, esUltima);
+
+  btnCurrent.classList.add('btn-actual');
+
+  container.append(btnCurrent, btnNext, btnLast);
 }
