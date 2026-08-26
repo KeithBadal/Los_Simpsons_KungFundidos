@@ -11,33 +11,23 @@ function setActiveButton(section) {
   const btnCharacter = document.getElementById(CHARACTER_SECTION);
   const btnEpisode = document.getElementById(EPISODE_SECTION);
   const btnLocation = document.getElementById(LOCATION_SECTION);
+  const btnFavorites = document.getElementById('favorites-link');
 
-  if (section === CHARACTER_SECTION) {
-    btnCharacter.classList.add('active');
-    btnEpisode.classList.remove('active');
-    btnLocation.classList.remove('active');
-    btnHome.classList.remove('active');
-  } else if (section === EPISODE_SECTION) {
-    btnCharacter.classList.remove('active');
-    btnEpisode.classList.add('active');
-    btnLocation.classList.remove('active');
-    btnHome.classList.remove('active');
-  } else if (section === LOCATION_SECTION) {
-    btnCharacter.classList.remove('active');
-    btnEpisode.classList.remove('active');
-    btnLocation.classList.add('active');
-    btnHome.classList.remove('active');
-  }else if (section === HOME_SECTION) {
-    btnCharacter.classList.remove('active');
-    btnEpisode.classList.remove('active');
-    btnLocation.classList.remove('active');
-    btnHome.classList.add('active');
-  }
+  [btnHome, btnCharacter, btnEpisode, btnLocation, btnFavorites].forEach(btn => {
+    if (btn) btn.classList.remove('active');
+  });
+
+  if (section === CHARACTER_SECTION) btnCharacter.classList.add('active');
+  else if (section === EPISODE_SECTION) btnEpisode.classList.add('active');
+  else if (section === LOCATION_SECTION) btnLocation.classList.add('active');
+  else if (section === HOME_SECTION) btnHome.classList.add('active');
+  else if (section === "favorites") btnFavorites.classList.add('active');
 }
+
 
 function hideSections() {
   [HOME_SECTION, CHARACTER_SECTION, EPISODE_SECTION, LOCATION_SECTION].forEach(s => {
-    const el = document.querySelector(`.${s}`);
+    const el = document.querySelector(`.${s}`) || document.getElementById(s);
     if (el) el.style.display = 'none';
   });
 }

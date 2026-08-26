@@ -140,3 +140,15 @@ async function loadSection(section, page = 1) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
+
+import { renderFavorites } from './render.js';
+
+document.querySelector('[data-view="favorites"]')
+  ?.addEventListener('click', (e) => {
+    e.preventDefault();
+    hideSections();
+    setActiveButton("favorites");
+    document.getElementById('favorites').style.display = 'grid';
+    renderFavorites();
+  });
+

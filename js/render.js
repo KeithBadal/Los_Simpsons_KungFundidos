@@ -6,11 +6,15 @@ import {
   LOCATION_SECTION
 } from './constantes.js';
 
+import { addFavorite, removeFavorite, isFavorite, getFavorites } from './favorites.js';
+
+
 export function renderAllCharacters(characters) {
   let html = '';
 
   characters.forEach(character => {
     const imageUrl = `${URL_API_BASE_IM}${character.portrait_path}`
+    
     html += `
       <div class="character">
         <div class="character_img">
@@ -25,13 +29,38 @@ export function renderAllCharacters(characters) {
           <p>Gender: ${character.gender || 'Unknown'}</p>
           <p>Status: ${character.status || 'Unknown'}</p>
           <p>Birthdate: ${character.birthdate || 'Unknown'}</p>
+
+          <button class="favorite-btn" data-id="${character.id}">
+            ${isFavorite(character.id) ? '❤️ Quitar favorito' : '🤍 Agregar favorito'}
+          </button>          
         </div>
       </div>
     `;
   });
 
-  document.querySelector('.characters').innerHTML = html
-}
+   const container = document.querySelector('.characters');
+  container.innerHTML = html;
+
+  container.querySelectorAll('.favorite-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      const character = characters.find(c => c.id === id);
+
+      if (isFavorite(id)) {
+        removeFavorite(id);
+        btn.textContent = '🤍 Agregar favorito';
+      } else {
+        addFavorite(character);
+        btn.textContent = '❤️ Quitar favorito';
+        const favoritesSection = document.getElementById('favorites');
+        if (favoritesSection && favoritesSection.style.display === 'grid') {
+        renderFavorites();       
+        }
+      }
+    });
+  });
+} 
+
 
 export function renderAllEpisodes(episodes) {
   let html = '';
@@ -108,6 +137,47 @@ export function renderHomeSection(randonCharacter) {
   if (container) {
     container.innerHTML = html;
   }
+}
+
+export function renderFavorites() {
+  const favs = getFavorites();
+  const container = document.querySelector('.favorites');
+
+  if (!favs.length) {
+    container.innerHTML = "<p>No hay favoritos aún.</p>";
+    return;
+  }
+
+  let html = '';
+
+  favs.forEach(character => {
+    const imageUrl = `${URL_API_BASE_IM}${character.portrait_path}`;
+
+    html += `
+      <div class="character">
+        <div class="character_img">
+          <img src="${imageUrl}" alt="${character.name}">
+        </div>
+
+        <div class="character_info">
+          <h2>${character.name}</h2>
+          <button class="remove-fav-btn" data-id="${character.id}">
+            ❌ Quitar
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('.remove-fav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      removeFavorite(id);
+      renderFavorites(); // refrescar
+    });
+  });
 }
 
 

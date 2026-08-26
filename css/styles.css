@@ -292,3 +292,43 @@ footer {
   transform: scale(1.05);
   box-shadow: 0 6px 16px rgba(255, 217, 15, 0.45);
 }
+
+/* =========================================
+   FAVORITES
+========================================= */
+
+.view {
+  display: none;
+}
+
+#favorites.view {
+  display: none; 
+}
+
+.favorites {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+
+.favorites .character_img img {
+  width: 200px;        
+  height: auto;        
+  object-fit: contain; 
+  border-radius: 10px; 
+}
+
+.favorites .character {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.favorites .character_img img {
+  max-width: 100%;
+  height: auto;
+}
