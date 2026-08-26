@@ -305,3 +305,108 @@ footer {
 /* =========================================
    PAGINATION
 **/
+#pagination {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 30px 20px;
+  flex-wrap: wrap;
+}
+
+.btn-paginacion {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-paginacion:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.btn-paginacion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-actual {
+  background-color: #fed41d;
+  color: #000000;
+  border: 2px solid #e0b000;
+  font-weight: bold;
+}
+
+.btn-actual:hover:not(:disabled) {
+  background-color: #e5be1a;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 480px) {
+  .characters,
+  .episodes,
+  .locations,
+  .favorites {
+    grid-template-columns: 1fr;
+  }
+
+  .logo h1 {
+    font-size: 2rem;
+  }
+
+  nav ul {
+    gap: 10px;
+  }
+
+  .character:hover,
+  .episode:hover,
+  .location:hover {
+    transform: none;
+  }
+}
+
+/* =========================================
+   FAVORITES
+========================================= */
+
+.view {
+  display: none;
+}
+
+.favorites {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.favorites .character_img img {
+  width: 200px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.favorite-btn,
+.remove-fav-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #FFD90F;
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.favorite-btn:hover,
+.remove-fav-btn:hover {
+  background: #ffcf00;
+}

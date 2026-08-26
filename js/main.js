@@ -17,7 +17,8 @@ import {
   renderAllCharacters,
   renderAllEpisodes,
   renderAllLocations,
-  renderPagination
+  renderPagination,
+  renderFavorites
 } from './render.js';
 
 let currentSection = HOME_SECTION;
@@ -59,6 +60,17 @@ function setupPages() {
 
     if (!e.target.closest('#random-character-btn')) return;
     await loadSection(HOME_SECTION);
+  });
+
+  const btnFavorites = document.querySelector('[data-view="favorites"]');
+  btnFavorites?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (e.currentTarget.classList.contains('active')) return;
+    hideSections();
+    setActiveButton('favorites');
+    const favoritesSection = document.getElementById('favorites');
+    if (favoritesSection) favoritesSection.style.display = 'grid';
+    renderFavorites();
   });
 
 
@@ -155,3 +167,4 @@ async function loadSection(section, page = 1) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
+
