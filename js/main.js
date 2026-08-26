@@ -17,7 +17,8 @@ import {
   renderAllCharacters,
   renderAllEpisodes,
   renderAllLocations,
-  renderPagination
+  renderPagination,
+  renderFavorites
 } from './render.js';
 
 let currentSection = HOME_SECTION;
@@ -44,8 +45,32 @@ function setupPages() {
   });
 
   document.querySelector('.home')?.addEventListener('click', async (e) => {
+    const card = e.target.closest('[data-target]');
+
+    if (card) {
+      const target = card.dataset.target;
+
+      if (target === CHARACTER_SECTION || target === EPISODE_SECTION || target === LOCATION_SECTION) {
+        setActiveButton(target);
+        await loadSection(target, 1);
+      }
+
+      return;
+    }
+
     if (!e.target.closest('#random-character-btn')) return;
     await loadSection(HOME_SECTION);
+  });
+
+  const btnFavorites = document.querySelector('[data-view="favorites"]');
+  btnFavorites?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (e.currentTarget.classList.contains('active')) return;
+    hideSections();
+    setActiveButton('favorites');
+    const favoritesSection = document.getElementById('favorites');
+    if (favoritesSection) favoritesSection.style.display = 'grid';
+    renderFavorites();
   });
 
 
@@ -83,7 +108,9 @@ async function loadSection(section, page = 1) {
 
   if (section === HOME_SECTION) {
     if (paginationContainer) paginationContainer.innerHTML = '';
-    if (selectedSection) selectedSection.innerHTML = '<div class="spinner"></div>';
+
+    const randomContainer = document.querySelector('.home_random');
+    if (randomContainer) randomContainer.innerHTML = '<div class="spinner"></div>';
 
     let randon = Math.floor(Math.random() * 1182);
     if (randon === 0) {
@@ -93,7 +120,7 @@ async function loadSection(section, page = 1) {
     const data = await fetchData(`${URL_API_CHARACTERS}/${randon}`);
 
     if (!data) {
-      console.error(`No se pudieron cargar los datos de ${section}`);
+      console.error(`Failed to load data for ${section}`);
       return;
     }
 
@@ -112,7 +139,7 @@ async function loadSection(section, page = 1) {
   }
 
   if (!baseUrl) {
-    console.error(`Sección desconocida: ${section}`);
+    console.error(`Unknown section: ${section}`);
     return;
   }
 
@@ -120,7 +147,7 @@ async function loadSection(section, page = 1) {
   const data = await fetchData(url);
 
   if (!data) {
-    console.error(`No se pudieron cargar los datos de ${section}`);
+    console.error(`Failed to load data for ${section}`);
     return;
   }
 
@@ -140,3 +167,4 @@ async function loadSection(section, page = 1) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
+

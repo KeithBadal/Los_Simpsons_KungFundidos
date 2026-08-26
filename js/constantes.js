@@ -1,5 +1,3 @@
-
-
 const URL_API_BASE = "https://thesimpsonsapi.com/api/";
 const URL_API_BASE_IM = "https://cdn.thesimpsonsapi.com/500";
 

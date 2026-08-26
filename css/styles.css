@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Luckiest+Guy&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Inter", sans-serif;
+  font-family: "Baloo 2", "Inter", sans-serif;
 }
 body {
   overflow-x: hidden;
@@ -12,41 +12,204 @@ body {
 
 #app {
   background: #111;
+  color: #eaeaea;
 }
 
 /* =========================================
    HEADER
-========================================= */
-
+**/
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  padding: 15px 20px;
+  padding: 12px 24px;
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #181818;
+  border-bottom: 2px solid #FFD90F;
 }
 
 .logo h1 {
   font-size: clamp(1.8rem, 5vw, 3rem);
+  font-family: "Luckiest Guy", cursive;
+  color: #FFD90F;
+  letter-spacing: 1px;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
 nav ul {
   display: flex;
   list-style: none;
-  gap: 20px;
+  gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 nav ul a {
   text-decoration: none;
+  color: #eaeaea;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+nav ul a:hover {
+  color: #FFD90F;
+}
+
+nav ul a.active {
+  color: #FFD90F;
+}
+
+nav ul a.active:hover {
+  color: #FFD90F;
+}
+
+/* =========================================
+   HOME
+**/
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 35px;
+  padding: 30px 20px;
+}
+
+.home_random {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #333;
+  border-top-color: #FFD90F;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.home_character {
+  background: #f5f5f5;
+  color: #222;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 280px;
+  overflow: hidden;
+}
+
+.home_character_img img {
+  width: 100%;
+  display: block;
+}
+
+.home_character_info {
+  padding: 15px 10px;
+}
+
+.btn-random {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #FFD90F;
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-random:hover {
+  background: #ffcf00;
+}
+
+.home_cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.card {
+  background: #f5f5f5;
+  color: #222;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.team {
+  width: 100%;
+  max-width: 900px;
+  text-align: center;
+}
+
+.team_title {
+  font-family: "Luckiest Guy", cursive;
+  color: #FFD90F;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+.team_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+}
+
+.team_member {
+  background: #f5f5f5;
+  color: #222;
+  border-radius: 10px;
+  padding: 20px 10px;
+}
+
+.team_avatar {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: #FFD90F;
+  color: #111;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team_member_back {
+  display: none;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.team_member:hover .team_member_back {
+  display: block;
 }
 
 /* =========================================
    CHARACTERS
-========================================= */
-
+**/
 .characters {
   padding: 20px 20px;
   display: grid;
@@ -56,9 +219,14 @@ nav ul a {
 
 .character {
   background: #f5f5f5;
+  color: #222;
   border-radius: 10px;
   text-align: center;
   transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .character:hover {
@@ -67,17 +235,25 @@ nav ul a {
 
 .character img {
   width: 100%;
+  height: 220px;
   object-fit: cover;
+  display: block;
 }
 
 .character_info {
   padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.character_info .favorite-btn {
+  margin-top: auto;
 }
 
 /* =========================================
    EPISODES
-========================================= */
-
+**/
 .episodes {
   padding: 20px 20px;
   display: grid;
@@ -87,9 +263,14 @@ nav ul a {
 
 .episode {
   background: #f5f5f5;
+  color: #222;
   border-radius: 10px;
   text-align: center;
   transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .episode:hover {
@@ -98,16 +279,20 @@ nav ul a {
 
 .episode img {
   width: 100%;
+  height: 180px;
   object-fit: cover;
+  display: block;
 }
 .episode_info {
   padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* =========================================
    LOCATIONS
-========================================= */
-
+**/
 .locations {
   padding: 20px 20px;
   display: grid;
@@ -117,6 +302,7 @@ nav ul a {
 
 .location {
   background: #f5f5f5;
+  color: #222;
   border-radius: 10px;
   text-align: center;
   padding: 20px 10px;
@@ -129,8 +315,7 @@ nav ul a {
 
 /* =========================================
    FOOTER
-========================================= */
-
+**/
 
 footer {
   margin: auto;
@@ -141,8 +326,7 @@ footer {
 
 /* =========================================
    PAGINATION
-========================================= */
-
+**/
 #pagination {
   display: flex;
   justify-content: center;
@@ -187,11 +371,11 @@ footer {
    RESPONSIVE
 ========================================= */
 
-
 @media (max-width: 480px) {
   .characters,
   .episodes,
-  .locations {
+  .locations,
+  .favorites {
     grid-template-columns: 1fr;
   }
 
@@ -210,85 +394,41 @@ footer {
   }
 }
 
-.active {
-  background-color: #FFD90F;
-  color: #000000;
-  border-radius: 5px;
-  cursor: default;
-  padding: 5px 10px;
+/* =========================================
+   FAVORITES
+========================================= */
+
+.view {
+  display: none;
 }
 
-.home {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  min-height: 70vh;
-  padding: 40px 20px;
+.favorites {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #333;
-  border-top: 6px solid #FFD90F;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.favorites .character_img img {
+  width: 200px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.home_character {
-  background: #f5f5f5;
-  border-radius: 16px;
-  padding: 30px;
-  width: 100%;
-  max-width: 320px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-.home_character_img {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.home_character_img img {
-  width: 220px;
-  height: 220px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #FFD90F;
-}
-
-.home_character_info h2 {
-  margin-bottom: 10px;
-}
-
-.home_character_info p {
-  color: #444;
-  margin: 4px 0;
-}
-
-.btn-random {
-  background-color: #FFD90F;
-  color: #000000;
+.favorite-btn,
+.remove-fav-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
   border: none;
   border-radius: 8px;
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: bold;
+  background: #FFD90F;
+  color: #111;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 217, 15, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn-random:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(255, 217, 15, 0.45);
+.favorite-btn:hover,
+.remove-fav-btn:hover {
+  background: #ffcf00;
 }

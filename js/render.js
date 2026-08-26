@@ -6,6 +6,9 @@ import {
   LOCATION_SECTION
 } from './constantes.js';
 
+import { addFavorite, removeFavorite, isFavorite, getFavorites } from './favorites.js';
+
+
 export function renderAllCharacters(characters) {
   let html = '';
 
@@ -25,12 +28,36 @@ export function renderAllCharacters(characters) {
           <p>Gender: ${character.gender || 'Unknown'}</p>
           <p>Status: ${character.status || 'Unknown'}</p>
           <p>Birthdate: ${character.birthdate || 'Unknown'}</p>
+
+          <button class="favorite-btn" data-id="${character.id}">
+            ${isFavorite(character.id) ? '❤️ Quitar favorito' : '🤍 Agregar favorito'}
+          </button>
         </div>
       </div>
     `;
   });
 
-  document.querySelector('.characters').innerHTML = html
+  const container = document.querySelector('.characters');
+  container.innerHTML = html;
+
+  container.querySelectorAll('.favorite-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      const character = characters.find(c => c.id === id);
+
+      if (isFavorite(id)) {
+        removeFavorite(id);
+        btn.textContent = '🤍 Agregar favorito';
+      } else {
+        addFavorite(character);
+        btn.textContent = '❤️ Quitar favorito';
+        const favoritesSection = document.getElementById('favorites');
+        if (favoritesSection && favoritesSection.style.display === 'grid') {
+          renderFavorites();
+        }
+      }
+    });
+  });
 }
 
 export function renderAllEpisodes(episodes) {
@@ -79,7 +106,7 @@ export function renderAllLocations(locations, currentPage) {
 
 
 export function renderHomeSection(randonCharacter) {
-  const container = document.querySelector('.home');
+  const container = document.querySelector('.home_random');
   let html = '';
 
   if (randonCharacter) {
@@ -104,12 +131,66 @@ export function renderHomeSection(randonCharacter) {
     html = '<p>No character data available.</p>';
   }
 
-  html += `<button id="random-character-btn" class="btn-random">Buscar otro personaje</button>`;
+  html += `<button id="random-character-btn" class="btn-random">Search another character</button>`;
   if (container) {
     container.innerHTML = html;
   }
 }
 
+const FAVORITES_PAGE_SIZE = 8;
+
+export function renderFavorites(page = 1) {
+  const favs = getFavorites();
+  const container = document.querySelector('.favorites');
+  const paginationContainer = document.getElementById('pagination');
+
+  if (!favs.length) {
+    container.innerHTML = "<p>No hay favoritos aún.</p>";
+    if (paginationContainer) paginationContainer.innerHTML = '';
+    return;
+  }
+
+  const totalPages = Math.ceil(favs.length / FAVORITES_PAGE_SIZE);
+  const currentPage = Math.min(Math.max(page, 1), totalPages);
+  const start = (currentPage - 1) * FAVORITES_PAGE_SIZE;
+  const pageFavs = favs.slice(start, start + FAVORITES_PAGE_SIZE);
+
+  let html = '';
+
+  pageFavs.forEach(character => {
+    const imageUrl = `${URL_API_BASE_IM}${character.portrait_path}`;
+
+    html += `
+      <div class="character">
+        <div class="character_img">
+          <img src="${imageUrl}" alt="${character.name}">
+        </div>
+
+        <div class="character_info">
+          <h2>${character.name}</h2>
+          <button class="remove-fav-btn" data-id="${character.id}">
+            ❌ Quitar
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('.remove-fav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      removeFavorite(id);
+      renderFavorites(currentPage);
+    });
+  });
+
+  renderPagination(totalPages, currentPage, (newPage) => {
+    renderFavorites(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 
 export function renderAllElements(elements, section) {
   if (section === CHARACTER_SECTION) {
@@ -143,14 +224,17 @@ export function renderPagination(totalPages, currentPage = 1, onPageClick = () =
     return btn;
   };
 
+  const prevPage = currentPage > 1 ? currentPage - 1 : 1;
   const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+  const esPrimera = currentPage <= 1;
   const esUltima = currentPage >= totalPages;
 
-  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, false);
+  const btnPrev = createBtn(`Prev: ${prevPage}`, 'btn-prev-page', prevPage, esPrimera);
+  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, true);
   const btnNext = createBtn(`Next: ${nextPage}`, 'btn-next-page', nextPage, esUltima);
   const btnLast = createBtn(`Last page: ${totalPages}`, 'btn-last-page', totalPages, esUltima);
 
   btnCurrent.classList.add('btn-actual');
 
-  container.append(btnCurrent, btnNext, btnLast);
+  container.append(btnPrev, btnCurrent, btnNext, btnLast);
 }
