@@ -137,18 +137,27 @@ export function renderHomeSection(randonCharacter) {
   }
 }
 
-export function renderFavorites() {
+const FAVORITES_PAGE_SIZE = 8;
+
+export function renderFavorites(page = 1) {
   const favs = getFavorites();
   const container = document.querySelector('.favorites');
+  const paginationContainer = document.getElementById('pagination');
 
   if (!favs.length) {
     container.innerHTML = "<p>No hay favoritos aún.</p>";
+    if (paginationContainer) paginationContainer.innerHTML = '';
     return;
   }
 
+  const totalPages = Math.ceil(favs.length / FAVORITES_PAGE_SIZE);
+  const currentPage = Math.min(Math.max(page, 1), totalPages);
+  const start = (currentPage - 1) * FAVORITES_PAGE_SIZE;
+  const pageFavs = favs.slice(start, start + FAVORITES_PAGE_SIZE);
+
   let html = '';
 
-  favs.forEach(character => {
+  pageFavs.forEach(character => {
     const imageUrl = `${URL_API_BASE_IM}${character.portrait_path}`;
 
     html += `
@@ -173,8 +182,13 @@ export function renderFavorites() {
     btn.addEventListener('click', () => {
       const id = Number(btn.dataset.id);
       removeFavorite(id);
-      renderFavorites(); // refrescar
+      renderFavorites(currentPage);
     });
+  });
+
+  renderPagination(totalPages, currentPage, (newPage) => {
+    renderFavorites(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
 
@@ -210,14 +224,17 @@ export function renderPagination(totalPages, currentPage = 1, onPageClick = () =
     return btn;
   };
 
+  const prevPage = currentPage > 1 ? currentPage - 1 : 1;
   const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+  const esPrimera = currentPage <= 1;
   const esUltima = currentPage >= totalPages;
 
-  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, false);
+  const btnPrev = createBtn(`Prev: ${prevPage}`, 'btn-prev-page', prevPage, esPrimera);
+  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, true);
   const btnNext = createBtn(`Next: ${nextPage}`, 'btn-next-page', nextPage, esUltima);
   const btnLast = createBtn(`Last page: ${totalPages}`, 'btn-last-page', totalPages, esUltima);
 
   btnCurrent.classList.add('btn-actual');
 
-  container.append(btnCurrent, btnNext, btnLast);
+  container.append(btnPrev, btnCurrent, btnNext, btnLast);
 }

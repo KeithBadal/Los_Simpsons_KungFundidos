@@ -24,10 +24,13 @@ function setActiveButton(section) {
 }
 
 function hideSections() {
-  [HOME_SECTION, CHARACTER_SECTION, EPISODE_SECTION, LOCATION_SECTION, "favorites"].forEach(s => {
-    const el = document.querySelector(`.${s}`) || document.getElementById(s);
+  [HOME_SECTION, CHARACTER_SECTION, EPISODE_SECTION, LOCATION_SECTION].forEach(s => {
+    const el = document.querySelector(`.${s}`);
     if (el) el.style.display = 'none';
   });
+
+  const favoritesSection = document.getElementById('favorites');
+  if (favoritesSection) favoritesSection.style.display = 'none';
 }
 
 
