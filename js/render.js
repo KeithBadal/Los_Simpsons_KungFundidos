@@ -206,35 +206,23 @@ export function renderAllElements(elements, section) {
 
 export function renderPagination(totalPages, currentPage = 1, onPageClick = () => {}) {
   const container = document.getElementById('pagination');
-
+  
   if (!container) return;
-
+  
   container.innerHTML = '';
 
-  const createBtn = (texto, id, paginaDestino, deshabilitado) => {
+  for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement('button');
-    btn.id = id;
+    btn.textContent = i;
+    
     btn.className = 'btn-paginacion';
-    btn.textContent = texto;
-    btn.disabled = deshabilitado;
 
-    if (!deshabilitado) {
-      btn.addEventListener('click', () => onPageClick(paginaDestino));
+    if (i === parseInt(currentPage)) {
+      btn.classList.add('btn-actual');
     }
-    return btn;
-  };
 
-  const prevPage = currentPage > 1 ? currentPage - 1 : 1;
-  const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
-  const esPrimera = currentPage <= 1;
-  const esUltima = currentPage >= totalPages;
+    btn.addEventListener('click', () => onPageClick(i));
 
-  const btnPrev = createBtn(`Prev: ${prevPage}`, 'btn-prev-page', prevPage, esPrimera);
-  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, true);
-  const btnNext = createBtn(`Next: ${nextPage}`, 'btn-next-page', nextPage, esUltima);
-  const btnLast = createBtn(`Last page: ${totalPages}`, 'btn-last-page', totalPages, esUltima);
-
-  btnCurrent.classList.add('btn-actual');
-
-  container.append(btnPrev, btnCurrent, btnNext, btnLast);
+    container.appendChild(btn);
+  }
 }
