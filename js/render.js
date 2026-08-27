@@ -92,8 +92,17 @@ export function renderAllLocations(locations, currentPage) {
   let html = '';
 
   locations.forEach(location => {
+
+    const imageUrl = `${URL_API_BASE_IM}${location.image_path}`;
+
     html += `
       <div class="location">
+        <div class="location_img">
+          <img
+            src="${imageUrl}"
+            alt="${location.name}"
+          >
+        </div>
         <h2>${location.name}</h2>
         <p>Town: ${location.town || 'Unknown'}</p>
         <p>Use: ${location.use || 'Unknown'}</p>

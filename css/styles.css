@@ -309,6 +309,13 @@ nav ul a.active:hover {
   transition: all 0.5s ease;
 }
 
+.location img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
 .location:hover {
   transform: scale(1.1);
 }
