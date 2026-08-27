@@ -227,6 +227,7 @@ nav ul a.active:hover {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  cursor: url('../favicon.svg'), pointer;
 }
 
 .character:hover {
@@ -271,6 +272,7 @@ nav ul a.active:hover {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  cursor: url('../favicon.svg'), pointer;
 }
 
 .episode:hover {
@@ -372,6 +374,77 @@ footer {
 
 .btn-actual:hover:not(:disabled) {
   background-color: #e5be1a;
+}
+
+/* =========================================
+   MODAL
+========================================= */
+.modal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.705);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #c8e511;
+  border: 2px solid #FFD90F;
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  text-align: center;
+  max-height: 90vh;
+}
+
+.close-btn {
+  position: absolute;
+  top: -15px; right: 15px;
+  color: #f60909;
+  font-size: 50px;
+  font-weight: bold;
+  cursor: url('../favicon.svg'), pointer;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+#modal-body img {
+  max-width: 100%;
+  height: 275px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+#modal-body p {
+  margin: 8px 0;
+}
+
+.phrases-box {
+  background-color: rgba(0, 0, 0, 0.05); 
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+  text-align: left; 
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.phrases-box ul {
+  padding-left: 20px;
+  margin: 10px 0 0 0;
+}
+
+.phrases-box li {
+  margin-bottom: 8px;
+  font-style: italic;
+  font-size: 0.9rem;
 }
 
 /* =========================================
