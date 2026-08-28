@@ -12,10 +12,10 @@ import { addFavorite, removeFavorite, isFavorite, getFavorites } from './favorit
 export function renderAllCharacters(characters) {
   let html = '';
 
-  characters.forEach(character => {
+  characters.forEach((character, index) => {
     const imageUrl = `${URL_API_BASE_IM}${character.portrait_path}`
     html += `
-      <div class="character">
+      <div class="character" data-index="${index}">
         <div class="character_img">
           <img
           src="${imageUrl}"
@@ -27,7 +27,6 @@ export function renderAllCharacters(characters) {
           <p>Occupation: ${character.occupation || 'Unknown'}</p>
           <p>Gender: ${character.gender || 'Unknown'}</p>
           <p>Status: ${character.status || 'Unknown'}</p>
-          <p>Birthdate: ${character.birthdate || 'Unknown'}</p>
 
           <button class="favorite-btn" data-id="${character.id}">
             ${isFavorite(character.id) ? '❤️ Quitar favorito' : '🤍 Agregar favorito'}
@@ -58,16 +57,23 @@ export function renderAllCharacters(characters) {
       }
     });
   });
+
+  document.querySelectorAll('.character').forEach(card => {
+    card.addEventListener('click', () => {
+      const index = card.getAttribute('data-index');
+      showModal(characters[index], 'character');
+    });
+  });
 }
 
 export function renderAllEpisodes(episodes) {
   let html = '';
 
-  episodes.forEach(episode => {
+  episodes.forEach((episode, index) => {
     const imageUrl = `${URL_API_BASE_IM}${episode.image_path}`;
 
     html += `
-      <div class="episode">
+      <div class="episode" data-index="${index}">
         <div class="episode_img">
           <img
             src="${imageUrl}"
@@ -79,21 +85,37 @@ export function renderAllEpisodes(episodes) {
           <h2>${episode.name}</h2>
           <p>Airdate: ${episode.air_date || 'Unknown'}</p>
           <p>Season: ${episode.season || 'Unknown'}</p>
-          <p>Synopsis: ${episode.synopsis || 'No synopsis available'}</p>
+          <p>Episode number: ${episode.episode_number || 'Unknown'}</p>
         </div>
       </div>
     `;
   });
 
   document.querySelector('.episodes').innerHTML = html
+
+  document.querySelectorAll('.episode').forEach(card => {
+    card.addEventListener('click', () => {
+      const index = card.getAttribute('data-index');
+      showModal(episodes[index], 'episode');
+    });
+  });
 }
 
 export function renderAllLocations(locations, currentPage) {
   let html = '';
 
   locations.forEach(location => {
+
+    const imageUrl = `${URL_API_BASE_IM}${location.image_path}`;
+
     html += `
       <div class="location">
+        <div class="location_img">
+          <img
+            src="${imageUrl}"
+            alt="${location.name}"
+          >
+        </div>
         <h2>${location.name}</h2>
         <p>Town: ${location.town || 'Unknown'}</p>
         <p>Use: ${location.use || 'Unknown'}</p>
@@ -206,35 +228,78 @@ export function renderAllElements(elements, section) {
 
 export function renderPagination(totalPages, currentPage = 1, onPageClick = () => {}) {
   const container = document.getElementById('pagination');
-
+  
   if (!container) return;
-
+  
   container.innerHTML = '';
 
-  const createBtn = (texto, id, paginaDestino, deshabilitado) => {
+  for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement('button');
-    btn.id = id;
+    btn.textContent = i;
+    
     btn.className = 'btn-paginacion';
-    btn.textContent = texto;
-    btn.disabled = deshabilitado;
 
-    if (!deshabilitado) {
-      btn.addEventListener('click', () => onPageClick(paginaDestino));
+    if (i === parseInt(currentPage)) {
+      btn.classList.add('btn-actual');
     }
-    return btn;
-  };
 
-  const prevPage = currentPage > 1 ? currentPage - 1 : 1;
-  const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
-  const esPrimera = currentPage <= 1;
-  const esUltima = currentPage >= totalPages;
+    btn.addEventListener('click', () => onPageClick(i));
 
-  const btnPrev = createBtn(`Prev: ${prevPage}`, 'btn-prev-page', prevPage, esPrimera);
-  const btnCurrent = createBtn(`Current page: ${currentPage}`, 'btn-current-page', currentPage, true);
-  const btnNext = createBtn(`Next: ${nextPage}`, 'btn-next-page', nextPage, esUltima);
-  const btnLast = createBtn(`Last page: ${totalPages}`, 'btn-last-page', totalPages, esUltima);
-
-  btnCurrent.classList.add('btn-actual');
-
-  container.append(btnPrev, btnCurrent, btnNext, btnLast);
+    container.appendChild(btn);
+  }
 }
+
+function showModal(data, type) {
+  const modal = document.getElementById('info-modal');
+  const modalBody = document.getElementById('modal-body');
+  
+  let html = '';
+if (type === 'character') {
+    const imageUrl = `${URL_API_BASE_IM}${data.portrait_path}`;
+
+    let phrasesHtml = '';
+
+    if (data.phrases && data.phrases.length > 0) {
+      const listItems = data.phrases.map(frase => `<li>"${frase}"</li>`).join('');
+      phrasesHtml = `
+        <div class="phrases-box">
+          <strong>Phrases:</strong>
+          <ul>
+            ${listItems}
+          </ul>
+        </div>
+      `;
+    }
+
+    html = `
+      <img src="${imageUrl}" alt="${data.name}">
+      <h2>${data.name}</h2>
+      <p><strong>Occupation:</strong> ${data.occupation || 'Unknown'}</p>
+      <p><strong>Gender:</strong> ${data.gender || 'Unknown'}</p>
+      <p><strong>Status:</strong> ${data.status || 'Unknown'}</p>
+      <p><strong>Birthday:</strong> ${data.birthdate || 'Unknown'}</p>
+      ${phrasesHtml} 
+    `;
+  } else if (type === 'episode') {
+    const imageUrl = `${URL_API_BASE_IM}${data.image_path}`;
+    html = `
+      <img src="${imageUrl}" alt="${data.name}">
+      <h2>${data.name}</h2>
+      <p><strong>Air date:</strong> ${data.air_date || 'Unknown'}</p>
+      <p><strong>Season:</strong> ${data.season || 'Unknown'}</p>
+      <p><strong>Episode number:</strong> ${data.episode_number || 'Unknown'}</p>
+      <p><strong>Synopsis:</strong> ${data.synopsis || 'No synopsis available'}</p>
+    `;
+  }
+  
+  modalBody.innerHTML = html;
+  modal.style.display = 'flex';
+}
+
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('info-modal');
+  if (!modal) return;
+  if (e.target.classList.contains('close-btn') || e.target === modal) {
+    modal.style.display = 'none';
+  }
+})
