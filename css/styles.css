@@ -208,12 +208,90 @@ nav ul a.active:hover {
 }
 
 /* =========================================
+   FILTERS
+**/
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 20px 0;
+}
+
+.filters select,
+.filters input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #222;
+  font-size: 0.9rem;
+}
+
+.filters select {
+  max-width: 180px;
+}
+
+.filters input[type="number"] {
+  width: 90px;
+}
+
+.filters input[type="search"] {
+  min-width: 180px;
+  flex: 1;
+  max-width: 420px;
+}
+
+#characters-filters input[type="search"] {
+  flex: 1 1 160px;
+  max-width: 260px;
+}
+
+#characters-filters .search-primary {
+  flex: 2 1 220px;
+  max-width: 360px;
+  font-weight: 600;
+}
+
+.filters button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #FFD90F;
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filters button:hover {
+  background: #ffcf00;
+}
+
+.filters .btn-clear-filters {
+  background: transparent;
+  border: 1px solid #666;
+  color: #eaeaea;
+}
+
+.filters .btn-clear-filters:hover {
+  background: #333;
+}
+
+.no-results {
+  padding: 40px 20px;
+  text-align: center;
+  color: #aaa;
+}
+
+/* =========================================
    CHARACTERS
 **/
-.characters {
+.characters-grid {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+  justify-content: center;
   gap: 15px;
 }
 
@@ -255,10 +333,11 @@ nav ul a.active:hover {
 /* =========================================
    EPISODES
 **/
-.episodes {
+.episodes-grid {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+  justify-content: center;
   gap: 15px;
 }
 
@@ -295,10 +374,11 @@ nav ul a.active:hover {
 /* =========================================
    LOCATIONS
 **/
-.locations {
+.locations-grid {
   padding: 20px 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+  justify-content: center;
   gap: 15px;
 }
 
@@ -338,19 +418,39 @@ footer {
 **/
 #pagination {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 15px;
-  padding: 30px 20px;
-  flex-wrap: wrap;
+  gap: 8px;
+  padding: 20px 10px;
+}
+
+.pagination-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  max-width: 60vw;
+  padding: 4px 2px;
+}
+
+.pagination-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.pagination-scroll::-webkit-scrollbar-thumb {
+  background: #FFD90F;
+  border-radius: 3px;
 }
 
 .btn-paginacion {
-  padding: 10px 20px;
+  padding: 6px 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff;
   color: #333;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  min-width: 36px;
+  flex-shrink: 0;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -372,8 +472,29 @@ footer {
   font-weight: bold;
 }
 
+@media (max-width: 480px) {
+  #pagination {
+    gap: 6px;
+    padding: 15px 8px;
+  }
+
+  .pagination-scroll {
+    max-width: 55vw;
+  }
+
+  .btn-paginacion {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    min-width: 30px;
+  }
+}
+
 .btn-actual:hover:not(:disabled) {
   background-color: #e5be1a;
+}
+
+.btn-cached {
+  border: 2px solid #4caf50;
 }
 
 /* =========================================
@@ -452,9 +573,9 @@ footer {
 ========================================= */
 
 @media (max-width: 480px) {
-  .characters,
-  .episodes,
-  .locations,
+  .characters-grid,
+  .episodes-grid,
+  .locations-grid,
   .favorites {
     grid-template-columns: 1fr;
   }
@@ -472,6 +593,21 @@ footer {
   .location:hover {
     transform: none;
   }
+
+  .filters {
+    padding: 10px 10px 0;
+    gap: 8px;
+  }
+
+  .filters select,
+  .filters input {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+
+  .filters input[type="number"] {
+    width: 70px;
+  }
 }
 
 /* =========================================
@@ -486,6 +622,7 @@ footer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
+  padding: 20px 20px;
 }
 
 .favorites .character_img img {
@@ -494,6 +631,7 @@ footer {
   height: auto;
   object-fit: contain;
   border-radius: 10px;
+  margin: 0 auto;
 }
 
 .favorite-btn,
