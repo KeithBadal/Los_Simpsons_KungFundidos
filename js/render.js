@@ -36,11 +36,12 @@ export function renderAllCharacters(characters) {
     `;
   });
 
-  const container = document.querySelector('.characters');
-  container.innerHTML = html;
+  const container = document.querySelector('.characters-grid');
+  container.innerHTML = html || '<p class="no-results">No characters found with these filters.</p>';
 
   container.querySelectorAll('.favorite-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const id = Number(btn.dataset.id);
       const character = characters.find(c => c.id === id);
 
@@ -83,7 +84,7 @@ export function renderAllEpisodes(episodes) {
 
         <div class="episode_info">
           <h2>${episode.name}</h2>
-          <p>Airdate: ${episode.air_date || 'Unknown'}</p>
+          <p>Airdate: ${episode.airdate || 'Unknown'}</p>
           <p>Season: ${episode.season || 'Unknown'}</p>
           <p>Episode number: ${episode.episode_number || 'Unknown'}</p>
         </div>
@@ -91,7 +92,7 @@ export function renderAllEpisodes(episodes) {
     `;
   });
 
-  document.querySelector('.episodes').innerHTML = html
+  document.querySelector('.episodes-grid').innerHTML = html || '<p class="no-results">No episodes found with these filters.</p>';
 
   document.querySelectorAll('.episode').forEach(card => {
     card.addEventListener('click', () => {
@@ -123,9 +124,128 @@ export function renderAllLocations(locations, currentPage) {
     `;
   });
 
-  document.querySelector('.locations').innerHTML = html
+  document.querySelector('.locations-grid').innerHTML = html || '<p class="no-results">No locations found with these filters.</p>';
 }
 
+function buildOptions(values, selected) {
+  return values
+    .map(v => `<option value="${v}" ${v === selected ? 'selected' : ''}>${v}</option>`)
+    .join('');
+}
+
+function uniqueValues(items, key) {
+  return [...new Set(items.map(item => item[key]).filter(Boolean))].sort();
+}
+
+function bindSearch(container, inputId, btnId, onSearch) {
+  const input = container.querySelector(`#${inputId}`);
+  const btn = container.querySelector(`#${btnId}`);
+
+  btn.addEventListener('click', () => onSearch(input.value));
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') onSearch(input.value);
+  });
+}
+
+export function renderCharacterFilters(characters, filters, onChange, onClear) {
+  const container = document.getElementById('characters-filters');
+  if (!container) return;
+
+  const statuses = uniqueValues(characters, 'status');
+  const genders = uniqueValues(characters, 'gender');
+
+  container.innerHTML = `
+    <input type="search" id="filter-character-search" class="search-primary" placeholder="Search character by name..." value="${filters.name}">
+    <input type="search" id="filter-occupation" placeholder="Search by occupation..." value="${filters.occupation}">
+    <select id="filter-status">
+      <option value="">Status</option>
+      ${buildOptions(statuses, filters.status)}
+    </select>
+    <select id="filter-gender">
+      <option value="">Gender</option>
+      ${buildOptions(genders, filters.gender)}
+    </select>
+    <input type="number" id="filter-min-age" placeholder="Min age" value="${filters.minAge}">
+    <input type="number" id="filter-max-age" placeholder="Max age" value="${filters.maxAge}">
+    <button type="button" id="btn-search-characters">🔍 Search</button>
+    <button type="button" class="btn-clear-filters" id="btn-clear-characters">✖ Clear Filters</button>
+  `;
+
+  const nameInput = container.querySelector('#filter-character-search');
+  const occupationInput = container.querySelector('#filter-occupation');
+
+  const triggerSearch = () => {
+    onChange('name', nameInput.value);
+    onChange('occupation', occupationInput.value);
+  };
+
+  container.querySelector('#btn-search-characters').addEventListener('click', triggerSearch);
+  [nameInput, occupationInput].forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') triggerSearch();
+    });
+  });
+
+  container.querySelector('#filter-status').addEventListener('change', (e) => onChange('status', e.target.value));
+  container.querySelector('#filter-gender').addEventListener('change', (e) => onChange('gender', e.target.value));
+  container.querySelector('#filter-min-age').addEventListener('input', (e) => onChange('minAge', e.target.value));
+  container.querySelector('#filter-max-age').addEventListener('input', (e) => onChange('maxAge', e.target.value));
+  container.querySelector('#btn-clear-characters').addEventListener('click', onClear);
+}
+
+export function renderEpisodeFilters(episodes, filters, onChange, onClear) {
+  const container = document.getElementById('episodes-filters');
+  if (!container) return;
+
+  const seasons = uniqueValues(episodes, 'season');
+  const years = [...new Set(episodes.map(e => (e.airdate || '').slice(0, 4)).filter(Boolean))].sort();
+
+  container.innerHTML = `
+    <input type="search" id="filter-episode-search" placeholder="Search episode by name..." value="${filters.search}">
+    <select id="filter-season">
+      <option value="">Season</option>
+      ${buildOptions(seasons, filters.season)}
+    </select>
+    <select id="filter-year">
+      <option value="">Release Year</option>
+      ${buildOptions(years, filters.year)}
+    </select>
+    <button type="button" id="btn-search-episodes">🔍 Search</button>
+    <button type="button" class="btn-clear-filters" id="btn-clear-episodes">✖ Clear Filters</button>
+  `;
+
+  bindSearch(container, 'filter-episode-search', 'btn-search-episodes', (value) => onChange('search', value));
+  container.querySelector('#filter-season').addEventListener('change', (e) => onChange('season', e.target.value));
+  container.querySelector('#filter-year').addEventListener('change', (e) => onChange('year', e.target.value));
+  container.querySelector('#btn-clear-episodes').addEventListener('click', onClear);
+}
+
+export function renderLocationFilters(locations, filters, onChange, onClear) {
+  const container = document.getElementById('locations-filters');
+  if (!container) return;
+
+  const towns = uniqueValues(locations, 'town');
+  const uses = uniqueValues(locations, 'use');
+
+  container.innerHTML = `
+    <input type="search" id="filter-location-search" placeholder="Search location by name..." value="${filters.search}">
+    <select id="filter-town">
+      <option value="">Town</option>
+      ${buildOptions(towns, filters.town)}
+    </select>
+    <select id="filter-use">
+      <option value="">Use</option>
+      ${buildOptions(uses, filters.use)}
+    </select>
+    <button type="button" id="btn-search-locations">🔍 Search</button>
+    <button type="button" class="btn-clear-filters" id="btn-clear-locations">✖ Clear Filters</button>
+  `;
+
+  bindSearch(container, 'filter-location-search', 'btn-search-locations', (value) => onChange('search', value));
+  container.querySelector('#filter-town').addEventListener('change', (e) => onChange('town', e.target.value));
+  container.querySelector('#filter-use').addEventListener('change', (e) => onChange('use', e.target.value));
+  container.querySelector('#btn-clear-locations').addEventListener('click', onClear);
+}
 
 export function renderHomeSection(randonCharacter) {
   const container = document.querySelector('.home_random');
@@ -226,26 +346,56 @@ export function renderAllElements(elements, section) {
   }
 }
 
-export function renderPagination(totalPages, currentPage = 1, onPageClick = () => {}) {
+export function renderPagination(totalPages, currentPage = 1, onPageClick = () => {}, isDataCached = false) {
   const container = document.getElementById('pagination');
-  
+
   if (!container) return;
-  
+
   container.innerHTML = '';
 
-  for (let i = 1; i <= totalPages; i++) {
+  currentPage = parseInt(currentPage);
+
+  const makeButton = (label, page, isCurrent = false, disabled = false, cached = false) => {
     const btn = document.createElement('button');
-    btn.textContent = i;
-    
+    btn.textContent = label;
     btn.className = 'btn-paginacion';
 
-    if (i === parseInt(currentPage)) {
-      btn.classList.add('btn-actual');
+    if (isCurrent) btn.classList.add('btn-actual');
+
+    if (cached) {
+      btn.classList.add('btn-cached');
+      btn.title = 'Already downloaded and saved in localStorage';
     }
 
-    btn.addEventListener('click', () => onPageClick(i));
+    if (disabled) btn.disabled = true;
 
-    container.appendChild(btn);
+    if (!disabled) {
+      btn.addEventListener('click', () => onPageClick(page));
+    }
+
+    return btn;
+  };
+
+  container.appendChild(makeButton('<', currentPage - 1, false, currentPage === 1));
+
+  const scrollContainer = document.createElement('div');
+  scrollContainer.className = 'pagination-scroll';
+
+  let currentBtn = null;
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = makeButton(i, i, i === currentPage, false, isDataCached);
+    if (i === currentPage) currentBtn = btn;
+    scrollContainer.appendChild(btn);
+  }
+
+  container.appendChild(scrollContainer);
+  container.appendChild(makeButton('>', currentPage + 1, false, currentPage === totalPages));
+
+  if (currentBtn) {
+    requestAnimationFrame(() => {
+      currentBtn.scrollIntoView({ inline: 'center', block: 'nearest' });
+    });
   }
 }
 
@@ -285,7 +435,7 @@ if (type === 'character') {
     html = `
       <img src="${imageUrl}" alt="${data.name}">
       <h2>${data.name}</h2>
-      <p><strong>Air date:</strong> ${data.air_date || 'Unknown'}</p>
+      <p><strong>Air date:</strong> ${data.airdate || 'Unknown'}</p>
       <p><strong>Season:</strong> ${data.season || 'Unknown'}</p>
       <p><strong>Episode number:</strong> ${data.episode_number || 'Unknown'}</p>
       <p><strong>Synopsis:</strong> ${data.synopsis || 'No synopsis available'}</p>

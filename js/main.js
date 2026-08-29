@@ -4,24 +4,48 @@ import { setActiveButton, hideSections } from './helpers.js';
 
 import {
   URL_API_CHARACTERS,
-  URL_API_EPISODES,
-  URL_API_LOCATIONS,
   HOME_SECTION,
   CHARACTER_SECTION,
   EPISODE_SECTION,
   LOCATION_SECTION
 } from './constantes.js';
 
+import { getAllData } from './data.js';
+import { filterCharacters, filterEpisodes, filterLocations } from './filters.js';
+
 import {
   renderHomeSection,
   renderAllCharacters,
   renderAllEpisodes,
   renderAllLocations,
+  renderCharacterFilters,
+  renderEpisodeFilters,
+  renderLocationFilters,
   renderPagination,
   renderFavorites
 } from './render.js';
 
+const PAGE_SIZE = 20;
+
 let currentSection = HOME_SECTION;
+
+const sectionData = {
+  [CHARACTER_SECTION]: [],
+  [EPISODE_SECTION]: [],
+  [LOCATION_SECTION]: []
+};
+
+const DEFAULT_FILTERS = {
+  [CHARACTER_SECTION]: { name: '', status: '', gender: '', minAge: '', maxAge: '', occupation: '' },
+  [EPISODE_SECTION]: { search: '', season: '', year: '' },
+  [LOCATION_SECTION]: { search: '', town: '', use: '' }
+};
+
+const filters = {
+  [CHARACTER_SECTION]: { ...DEFAULT_FILTERS[CHARACTER_SECTION] },
+  [EPISODE_SECTION]: { ...DEFAULT_FILTERS[EPISODE_SECTION] },
+  [LOCATION_SECTION]: { ...DEFAULT_FILTERS[LOCATION_SECTION] }
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
   setupPages();
@@ -71,6 +95,7 @@ function setupPages() {
     const favoritesSection = document.getElementById('favorites');
     if (favoritesSection) favoritesSection.style.display = 'grid';
     renderFavorites();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
 
@@ -100,13 +125,15 @@ async function loadSection(section, page = 1) {
   currentSection = section;
 
   hideSections();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const selectedSection = document.querySelector(`.${section}`);
-  if (selectedSection) selectedSection.style.display = section === HOME_SECTION ? 'flex' : 'grid';
-
-  const paginationContainer = document.getElementById('pagination');
+  if (selectedSection) {
+    selectedSection.style.display = section === HOME_SECTION ? 'flex' : 'block';
+  }
 
   if (section === HOME_SECTION) {
+    const paginationContainer = document.getElementById('pagination');
     if (paginationContainer) paginationContainer.innerHTML = '';
 
     const randomContainer = document.querySelector('.home_random');
@@ -128,43 +155,72 @@ async function loadSection(section, page = 1) {
     return;
   }
 
-  let baseUrl;
-
-  if (section === CHARACTER_SECTION) {
-    baseUrl = URL_API_CHARACTERS;
-  } else if (section === EPISODE_SECTION) {
-    baseUrl = URL_API_EPISODES;
-  } else if (section === LOCATION_SECTION) {
-    baseUrl = URL_API_LOCATIONS;
-  }
-
-  if (!baseUrl) {
-    console.error(`Unknown section: ${section}`);
-    return;
-  }
-
-  const url = `${baseUrl}?page=${page}`;
-  const data = await fetchData(url);
-
-  if (!data) {
-    console.error(`Failed to load data for ${section}`);
-    return;
-  }
-
-  const elements = data.results || data;
-
-  if (section === CHARACTER_SECTION) {
-    renderAllCharacters(elements);
-  } else if (section === EPISODE_SECTION) {
-    renderAllEpisodes(elements);
-  } else if (section === LOCATION_SECTION) {
-    renderAllLocations(elements);
-  }
-
-  const totalPages = data.pages || 1;
-  renderPagination(totalPages, page, (newPage) => {
-    loadSection(currentSection, newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  await loadFilterableSection(section, page);
 }
 
+async function loadFilterableSection(section, page) {
+  const gridContainer = document.querySelector(`.${section}-grid`);
+
+  if (sectionData[section].length === 0) {
+    if (gridContainer) gridContainer.innerHTML = '<div class="spinner"></div>';
+    sectionData[section] = await getAllData(section);
+  }
+
+  renderSectionFilters(section);
+  renderSectionPage(section, page);
+}
+
+function clearFilters(section) {
+  filters[section] = { ...DEFAULT_FILTERS[section] };
+  renderSectionFilters(section);
+  renderSectionPage(section, 1);
+}
+
+function renderSectionFilters(section) {
+  const data = sectionData[section];
+
+  if (section === CHARACTER_SECTION) {
+    renderCharacterFilters(data, filters[CHARACTER_SECTION], (key, value) => {
+      filters[CHARACTER_SECTION][key] = value;
+      renderSectionPage(CHARACTER_SECTION, 1);
+    }, () => clearFilters(CHARACTER_SECTION));
+  } else if (section === EPISODE_SECTION) {
+    renderEpisodeFilters(data, filters[EPISODE_SECTION], (key, value) => {
+      filters[EPISODE_SECTION][key] = value;
+      renderSectionPage(EPISODE_SECTION, 1);
+    }, () => clearFilters(EPISODE_SECTION));
+  } else if (section === LOCATION_SECTION) {
+    renderLocationFilters(data, filters[LOCATION_SECTION], (key, value) => {
+      filters[LOCATION_SECTION][key] = value;
+      renderSectionPage(LOCATION_SECTION, 1);
+    }, () => clearFilters(LOCATION_SECTION));
+  }
+}
+
+function getFilteredData(section) {
+  const data = sectionData[section];
+
+  if (section === CHARACTER_SECTION) return filterCharacters(data, filters[CHARACTER_SECTION]);
+  if (section === EPISODE_SECTION) return filterEpisodes(data, filters[EPISODE_SECTION]);
+  return filterLocations(data, filters[LOCATION_SECTION]);
+}
+
+function renderSectionPage(section, page) {
+  const filtered = getFilteredData(section);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(Math.max(page, 1), totalPages);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+  if (section === CHARACTER_SECTION) renderAllCharacters(pageItems);
+  else if (section === EPISODE_SECTION) renderAllEpisodes(pageItems);
+  else if (section === LOCATION_SECTION) renderAllLocations(pageItems);
+
+  const isDataCached = sectionData[section].length > 0;
+
+  renderPagination(totalPages, currentPage, (newPage) => {
+    renderSectionPage(section, newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, isDataCached);
+}
