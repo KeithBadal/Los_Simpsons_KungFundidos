@@ -29,7 +29,7 @@ export function renderAllCharacters(characters) {
           <p>Status: ${character.status || 'Unknown'}</p>
 
           <button class="favorite-btn" data-id="${character.id}">
-            ${isFavorite(character.id) ? '❤️ Quitar favorito' : '🤍 Agregar favorito'}
+            ${isFavorite(character.id) ? '❤️ Remove from favorite' : '🤍 Add Favorite'}
           </button>
         </div>
       </div>
@@ -47,10 +47,10 @@ export function renderAllCharacters(characters) {
 
       if (isFavorite(id)) {
         removeFavorite(id);
-        btn.textContent = '🤍 Agregar favorito';
+        btn.textContent = '🤍 Add Favorite';
       } else {
         addFavorite(character);
-        btn.textContent = '❤️ Quitar favorito';
+        btn.textContent = '❤️ Remove from favorite';
         const favoritesSection = document.getElementById('favorites');
         if (favoritesSection && favoritesSection.style.display === 'grid') {
           renderFavorites();
@@ -134,7 +134,11 @@ function buildOptions(values, selected) {
 }
 
 function uniqueValues(items, key) {
-  return [...new Set(items.map(item => item[key]).filter(Boolean))].sort();
+  const values = [...new Set(items.map(item => item[key]).filter(Boolean))];
+  const allNumeric = values.every(v => v !== '' && !isNaN(Number(v)));
+  return allNumeric
+    ? values.sort((a, b) => Number(a) - Number(b))
+    : values.sort();
 }
 
 export function renderCharacterFilters(characters, filters, onChange, onClear) {
