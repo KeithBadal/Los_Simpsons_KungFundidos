@@ -180,18 +180,18 @@ function renderSectionFilters(section) {
   const data = sectionData[section];
 
   if (section === CHARACTER_SECTION) {
-    renderCharacterFilters(data, filters[CHARACTER_SECTION], (key, value) => {
-      filters[CHARACTER_SECTION][key] = value;
+    renderCharacterFilters(data, filters[CHARACTER_SECTION], (updates) => {
+      Object.assign(filters[CHARACTER_SECTION], updates);
       renderSectionPage(CHARACTER_SECTION, 1);
     }, () => clearFilters(CHARACTER_SECTION));
   } else if (section === EPISODE_SECTION) {
-    renderEpisodeFilters(data, filters[EPISODE_SECTION], (key, value) => {
-      filters[EPISODE_SECTION][key] = value;
+    renderEpisodeFilters(data, filters[EPISODE_SECTION], (updates) => {
+      Object.assign(filters[EPISODE_SECTION], updates);
       renderSectionPage(EPISODE_SECTION, 1);
     }, () => clearFilters(EPISODE_SECTION));
   } else if (section === LOCATION_SECTION) {
-    renderLocationFilters(data, filters[LOCATION_SECTION], (key, value) => {
-      filters[LOCATION_SECTION][key] = value;
+    renderLocationFilters(data, filters[LOCATION_SECTION], (updates) => {
+      Object.assign(filters[LOCATION_SECTION], updates);
       renderSectionPage(LOCATION_SECTION, 1);
     }, () => clearFilters(LOCATION_SECTION));
   }

@@ -137,16 +137,6 @@ function uniqueValues(items, key) {
   return [...new Set(items.map(item => item[key]).filter(Boolean))].sort();
 }
 
-function bindSearch(container, inputId, btnId, onSearch) {
-  const input = container.querySelector(`#${inputId}`);
-  const btn = container.querySelector(`#${btnId}`);
-
-  btn.addEventListener('click', () => onSearch(input.value));
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') onSearch(input.value);
-  });
-}
-
 export function renderCharacterFilters(characters, filters, onChange, onClear) {
   const container = document.getElementById('characters-filters');
   if (!container) return;
@@ -173,23 +163,29 @@ export function renderCharacterFilters(characters, filters, onChange, onClear) {
 
   const nameInput = container.querySelector('#filter-character-search');
   const occupationInput = container.querySelector('#filter-occupation');
+  const statusSelect = container.querySelector('#filter-status');
+  const genderSelect = container.querySelector('#filter-gender');
+  const minAgeInput = container.querySelector('#filter-min-age');
+  const maxAgeInput = container.querySelector('#filter-max-age');
 
   const triggerSearch = () => {
-    onChange('name', nameInput.value);
-    onChange('occupation', occupationInput.value);
+    onChange({
+      name: nameInput.value,
+      occupation: occupationInput.value,
+      status: statusSelect.value,
+      gender: genderSelect.value,
+      minAge: minAgeInput.value,
+      maxAge: maxAgeInput.value
+    });
   };
 
   container.querySelector('#btn-search-characters').addEventListener('click', triggerSearch);
-  [nameInput, occupationInput].forEach(input => {
+  [nameInput, occupationInput, minAgeInput, maxAgeInput].forEach(input => {
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') triggerSearch();
     });
   });
 
-  container.querySelector('#filter-status').addEventListener('change', (e) => onChange('status', e.target.value));
-  container.querySelector('#filter-gender').addEventListener('change', (e) => onChange('gender', e.target.value));
-  container.querySelector('#filter-min-age').addEventListener('input', (e) => onChange('minAge', e.target.value));
-  container.querySelector('#filter-max-age').addEventListener('input', (e) => onChange('maxAge', e.target.value));
   container.querySelector('#btn-clear-characters').addEventListener('click', onClear);
 }
 
@@ -214,9 +210,23 @@ export function renderEpisodeFilters(episodes, filters, onChange, onClear) {
     <button type="button" class="btn-clear-filters" id="btn-clear-episodes">✖ Clear Filters</button>
   `;
 
-  bindSearch(container, 'filter-episode-search', 'btn-search-episodes', (value) => onChange('search', value));
-  container.querySelector('#filter-season').addEventListener('change', (e) => onChange('season', e.target.value));
-  container.querySelector('#filter-year').addEventListener('change', (e) => onChange('year', e.target.value));
+  const searchInput = container.querySelector('#filter-episode-search');
+  const seasonSelect = container.querySelector('#filter-season');
+  const yearSelect = container.querySelector('#filter-year');
+
+  const triggerSearch = () => {
+    onChange({
+      search: searchInput.value,
+      season: seasonSelect.value,
+      year: yearSelect.value
+    });
+  };
+
+  container.querySelector('#btn-search-episodes').addEventListener('click', triggerSearch);
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') triggerSearch();
+  });
+
   container.querySelector('#btn-clear-episodes').addEventListener('click', onClear);
 }
 
@@ -241,9 +251,23 @@ export function renderLocationFilters(locations, filters, onChange, onClear) {
     <button type="button" class="btn-clear-filters" id="btn-clear-locations">✖ Clear Filters</button>
   `;
 
-  bindSearch(container, 'filter-location-search', 'btn-search-locations', (value) => onChange('search', value));
-  container.querySelector('#filter-town').addEventListener('change', (e) => onChange('town', e.target.value));
-  container.querySelector('#filter-use').addEventListener('change', (e) => onChange('use', e.target.value));
+  const searchInput = container.querySelector('#filter-location-search');
+  const townSelect = container.querySelector('#filter-town');
+  const useSelect = container.querySelector('#filter-use');
+
+  const triggerSearch = () => {
+    onChange({
+      search: searchInput.value,
+      town: townSelect.value,
+      use: useSelect.value
+    });
+  };
+
+  container.querySelector('#btn-search-locations').addEventListener('click', triggerSearch);
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') triggerSearch();
+  });
+
   container.querySelector('#btn-clear-locations').addEventListener('click', onClear);
 }
 
@@ -394,7 +418,7 @@ export function renderPagination(totalPages, currentPage = 1, onPageClick = () =
 
   if (currentBtn) {
     requestAnimationFrame(() => {
-      currentBtn.scrollIntoView({ inline: 'center', block: 'nearest' });
+      scrollContainer.scrollLeft = currentBtn.offsetLeft - (scrollContainer.clientWidth / 2) + (currentBtn.offsetWidth / 2);
     });
   }
 }
